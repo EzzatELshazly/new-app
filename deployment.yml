@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ivolve-EE-pipeline
+  namespace: ezzatelshazly
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ivolve-EE-pipeline
+  template:
+    metadata:
+      labels:
+        app: ivolve-EE-pipeline
+    spec:
+      containers:
+        - name: container
+          image: docker.io/ezzatelshazly/firstpipeline:build-12-app
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-app
+  namespace: ezzatelshazly
+spec:
+  selector:
+    app: ivolve-EE-pipeline
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: test
+  namespace: ezzatelshazly
+spec:
+  to:
+    kind: Service
+    name: svc-app
+  port:
+    targetPort: 8080
+  wildcardPolicy: None
+
