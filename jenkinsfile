@@ -32,6 +32,11 @@ pipeline {
             }
         }
         
+        stage('SonarQube Test Analysis') {
+             withSonarQubeEnv() {
+               sh "./gradlew sonar"
+            }
+        }
         
         stage('Build Docker image') {
             steps {
